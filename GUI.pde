@@ -1,5 +1,6 @@
 class GUI
 {
+  
   final int BUTTON_WIDTH = 50;
   final int BUTTON_HEIGHT = 25;
   
@@ -7,6 +8,7 @@ class GUI
   PApplet parent;
   Button loadButton, playButton, stopButton;
   
+    
   GUI(PApplet parent)
   {
     this.parent = parent;   
@@ -16,19 +18,19 @@ class GUI
                     .setCaptionLabel("LOAD")
                     .setPosition(20, 200)
                     .setSize(BUTTON_WIDTH, BUTTON_HEIGHT)
-                    .plugTo(this);
+                    .plugTo(sampler);
     
     playButton = cp5.addButton("play")
                     .setCaptionLabel("PLAY")
                     .setPosition(120, 200)
                     .setSize(BUTTON_WIDTH, BUTTON_HEIGHT)
-                    .plugTo(this);
+                    .plugTo(sampler);
                     
     stopButton = cp5.addButton("stopIt")
                     .setCaptionLabel("STOP")
                     .setPosition(220, 200)
                     .setSize(BUTTON_WIDTH, BUTTON_HEIGHT)
-                    .plugTo(this);
+                    .plugTo(sampler);
   }
   
   
@@ -38,20 +40,7 @@ class GUI
     rect(10, 10, 400, 150);
   }
   
-  void load()
-  {
-    println("load"); 
-  }
-  
-  void play()
-  {
-    println("play");
-  }
-  
-  void stopIt()
-  {
-    println("stop"); 
-  }
+
   
   
 }

@@ -7,8 +7,9 @@ AUDIO DEGRADER
 import controlP5.*;
 import beads.*;
 
-GUI gui;
+
 Sampler sampler;
+GUI gui;
 
 
 void setup()
@@ -16,8 +17,9 @@ void setup()
   size(800, 600);
   background(100);
   
+  sampler = new Sampler();  
   gui = new GUI(this);
-  sampler = new Sampler();
+
 }
 
 

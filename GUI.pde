@@ -7,6 +7,7 @@ class GUI
   ControlP5 cp5;
   PApplet parent;
   Button loadButton, playButton, stopButton;
+  float[][] sampleData;
   
     
   GUI(PApplet parent)
@@ -37,7 +38,22 @@ class GUI
   void drawSample()
   {
     fill(0);
-    rect(10, 10, 400, 150);
+    rect(0, 0, 600, 100);
+    
+    if (sampler.hasSample())
+    {
+      sampleData = sampler.getSampleData();
+      
+      for (int index = 0; index < sampleData[0].length; index++)
+      {
+        float x = map(index, 0, sampleData[0].length, 0, 600);
+        float y = map(sampleData[0][index], -1, 1, 100, 0);
+        fill(255);
+        ellipse(x, y, 3, 3);
+          
+      }
+      
+    }
   }
   
 

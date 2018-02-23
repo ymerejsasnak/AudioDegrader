@@ -2,6 +2,8 @@ public class Sampler
 {
   AudioContext ac;
   SamplePlayer sampler;
+  Sample loadedSample;
+  float[][] frameData;
   
   Sampler()
   {
@@ -30,27 +32,30 @@ public class Sampler
   
   void setupSampler(String fileName)
   {
+    loadedSample = SampleManager.sample(fileName);
+    frameData = new float[2][(int)loadedSample.getNumFrames()];
+    loadedSample.getFrames(0, frameData);
+    
     if (sampler == null)
     {
-      sampler = new SamplePlayer(ac, SampleManager.sample(fileName)); 
+      sampler = new SamplePlayer(ac, loadedSample); 
       sampler.pause(true);
       sampler.setKillOnEnd(false);
       ac.out.addInput(sampler);
     }
     else
     {
-      sampler.setSample(SampleManager.sample(fileName)); 
+      sampler.setSample(loadedSample); 
       sampler.pause(true);
     }
-    
+
   }
   
   void play() 
   {
     if (sampler != null)
     {
-      sampler.setPosition(0);
-      sampler.start(); 
+      sampler.reTrigger();
     }
   }
   
@@ -58,5 +63,19 @@ public class Sampler
   void stopIt()
   {
     println("Stop"); 
+  }
+  
+  
+  boolean hasSample()
+  {
+    return loadedSample != null;  
+  }
+  
+  
+  float[][] getSampleData()
+  {
+    // ??temporarily will assume 1 channel (mono) audio
+    return frameData;
+    
   }
 }

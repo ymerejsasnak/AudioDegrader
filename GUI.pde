@@ -73,8 +73,9 @@ class GUI
     {
       image(samplePlot, PADDING, PADDING);   
       // playback position
-      int playPos = (int) sampler.getPosition();
-      playPos = (int) map(playPos, 0, (float)sampler.getLength() - 1, PADDING, PADDING + SAMPLE_WINDOW_WIDTH - 1);
+      float playPos = (float) sampler.getPosition();
+      println(sampler.getPosition());
+      playPos = map(playPos, 0, (float)sampler.getLength() - 1, PADDING, PADDING + SAMPLE_WINDOW_WIDTH - 1);
       stroke(100);
       line(playPos, PADDING, playPos, PADDING + SAMPLE_WINDOW_HEIGHT - 1);
     }

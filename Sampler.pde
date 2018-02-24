@@ -92,7 +92,7 @@ public class Sampler
   
   double getPosition()
   {
-    return sampler.getPosition(); 
+    return sampler.getPosition() > getLength() ? getLength() : sampler.getPosition(); 
   }
   
   

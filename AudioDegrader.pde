@@ -16,6 +16,7 @@ void setup()
 {
   size(800, 600);
   background(100);
+  noStroke();
   
   sampler = new Sampler();  
   gui = new GUI(this);
@@ -27,6 +28,7 @@ void setup()
 void draw()
 {
   
-  gui.drawSample();
+  gui.display();
   
+  println(frameRate);
 }

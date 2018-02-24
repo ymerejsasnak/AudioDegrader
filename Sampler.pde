@@ -48,7 +48,8 @@ public class Sampler
       sampler.setSample(loadedSample); 
       sampler.pause(true);
     }
-
+    
+    gui.plotSample();
   }
   
   void play() 
@@ -66,9 +67,9 @@ public class Sampler
   }
   
   
-  boolean hasSample()
+  boolean isLoaded()
   {
-    return loadedSample != null;  
+    return sampler != null;  
   }
   
   
@@ -76,6 +77,17 @@ public class Sampler
   {
     // ??temporarily will assume 1 channel (mono) audio
     return frameData;
-    
+  }
+  
+  
+  double getPosition()
+  {
+    return sampler.getPosition(); 
+  }
+  
+  
+  double getLength()
+  {
+    return loadedSample.getLength(); 
   }
 }

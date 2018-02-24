@@ -54,16 +54,26 @@ public class Sampler
   
   void play() 
   {
-    if (sampler != null)
-    {
-      sampler.reTrigger();
-    }
+    if (sampler == null)  return;
+    
+    sampler.reTrigger(); 
   }
   
   
+  void mousePlay(int _mouseX)
+  {
+    if (sampler == null)  return;
+    
+    float startPos = map(_mouseX, 0, gui.SAMPLE_WINDOW_WIDTH, 0, (float)loadedSample.getLength());
+    sampler.start(startPos); 
+  }
+  
   void stopIt()
   {
-    println("Stop"); 
+    if (sampler == null)  return;
+    
+    sampler.pause(true);
+    sampler.reset();
   }
   
   

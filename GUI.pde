@@ -13,7 +13,6 @@ class GUI
   PApplet parent;
   Button loadButton, playButton, stopButton;
   float[][] sampleData;
-  float samplePos;
   PGraphics samplePlot;
   
     
@@ -26,19 +25,19 @@ class GUI
     
     loadButton = cp5.addButton("load")
                     .setCaptionLabel("LOAD")
-                    .setPosition(20, 200)
+                    .setPosition(PADDING, SAMPLE_WINDOW_HEIGHT + PADDING * 2)
                     .setSize(BUTTON_WIDTH, BUTTON_HEIGHT)
                     .plugTo(sampler);
     
     playButton = cp5.addButton("play")
                     .setCaptionLabel("PLAY")
-                    .setPosition(120, 200)
+                    .setPosition(PADDING * 2 + BUTTON_WIDTH, SAMPLE_WINDOW_HEIGHT + PADDING * 2)
                     .setSize(BUTTON_WIDTH, BUTTON_HEIGHT)
                     .plugTo(sampler);
                     
     stopButton = cp5.addButton("stopIt")
                     .setCaptionLabel("STOP")
-                    .setPosition(220, 200)
+                    .setPosition(PADDING * 3 + BUTTON_WIDTH * 2, SAMPLE_WINDOW_HEIGHT + PADDING * 2)
                     .setSize(BUTTON_WIDTH, BUTTON_HEIGHT)
                     .plugTo(sampler);
 
@@ -51,14 +50,16 @@ class GUI
     int sampleLength = sampleData[0].length;
     
     samplePlot.beginDraw();
-    samplePlot.background(0);
+    samplePlot.background(10);
+    samplePlot.stroke(50, 0, 0);
+    samplePlot.line(0, SAMPLE_WINDOW_HEIGHT / 2, SAMPLE_WINDOW_WIDTH, SAMPLE_WINDOW_HEIGHT / 2);
     samplePlot.stroke(200);
-    for (int index = 0; index < sampleLength - 1; index++)
+    for (float index = 0; index < SAMPLE_WINDOW_WIDTH - 1; index++)
     {
-      float x1 = map(index, 0, sampleLength, PADDING, PADDING + SAMPLE_WINDOW_WIDTH);
-      float y1 = map(sampleData[0][index], -1, 1, PADDING + SAMPLE_WINDOW_HEIGHT, PADDING);
-      float x2 = map(index + 1, 0, sampleLength, PADDING, PADDING + SAMPLE_WINDOW_WIDTH);
-      float y2 = map(sampleData[0][index + 1], -1, 1, PADDING + SAMPLE_WINDOW_HEIGHT, PADDING);
+      float x1 = index;
+      float y1 = map(sampleData[0][int(index / SAMPLE_WINDOW_WIDTH * sampleLength)], -1, 1, SAMPLE_WINDOW_HEIGHT, 0);
+      float x2 = index + 1;
+      float y2 = map(sampleData[0][int((index + 1) / SAMPLE_WINDOW_WIDTH * sampleLength)], -1, 1, SAMPLE_WINDOW_HEIGHT, 0);
       
       samplePlot.line(x1, y1, x2, y2); 
     }
@@ -72,15 +73,18 @@ class GUI
     {
       image(samplePlot, PADDING, PADDING);   
       // playback position
-      samplePos = (float) sampler.getPosition();
-      samplePos = map(samplePos, 0, (float)sampler.getLength(), PADDING, PADDING + SAMPLE_WINDOW_WIDTH);
-      line(samplePos, PADDING, samplePos, PADDING + SAMPLE_WINDOW_HEIGHT);
+      int playPos = (int) sampler.getPosition();
+      playPos = (int) map(playPos, 0, (float)sampler.getLength() - 1, PADDING, PADDING + SAMPLE_WINDOW_WIDTH - 1);
+      stroke(100);
+      line(playPos, PADDING, playPos, PADDING + SAMPLE_WINDOW_HEIGHT - 1);
     }
     else
     {
-      fill(0);
-      stroke(255);
+      fill(10);
+      noStroke();
       rect(PADDING, PADDING, SAMPLE_WINDOW_WIDTH, SAMPLE_WINDOW_HEIGHT);
+      stroke(50, 0, 0);
+      line(PADDING, PADDING + SAMPLE_WINDOW_HEIGHT / 2, PADDING + SAMPLE_WINDOW_WIDTH, PADDING + SAMPLE_WINDOW_HEIGHT / 2);
     }
   }
   

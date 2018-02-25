@@ -16,6 +16,8 @@ class GUI
   Button loadButton, playButton, stopButton;
   PGraphics samplePlot;
   
+  Button tempButton;
+  
     
   GUI(PApplet parent)
   {
@@ -41,6 +43,11 @@ class GUI
                     .setPosition(PADDING * 3 + BUTTON_WIDTH * 2, SAMPLE_WINDOW_HEIGHT + PADDING * 2)
                     .setSize(BUTTON_WIDTH, BUTTON_HEIGHT)
                     .plugTo(sampler);
+                    
+                    
+    tempButton = cp5.addButton("temp")
+                    .setPosition(100, 400)
+                    .plugTo(degrader);
 
   }
   

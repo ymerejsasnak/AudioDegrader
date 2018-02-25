@@ -12,6 +12,18 @@ public class Sampler
   }
   
   
+  AudioContext getAudioContext()
+  {
+    return ac; 
+  }
+  
+  
+  SamplePlayer getSampler()
+  {
+    return sampler;  
+  }
+  
+  
   void load()
   {
     selectInput("load a file", "loader", dataFile("data"), this);
@@ -49,6 +61,17 @@ public class Sampler
     
     gui.plotSample();
   }
+  
+  
+  void loadNew(Sample sample)
+  {
+    loadedSample = sample;
+    sampler.setSample(loadedSample);
+    sampler.pause(true);
+    //ac.out.addInput(sampler);
+    gui.plotSample();
+  }
+  
   
   void play() 
   {

@@ -12,6 +12,7 @@ import beads.*;
 
 
 Sampler sampler;
+Degrader degrader;
 GUI gui;
 
 
@@ -21,7 +22,8 @@ void setup()
   background(20);
   noStroke();
   
-  sampler = new Sampler();  
+  sampler = new Sampler(); 
+  degrader = new Degrader(sampler.getAudioContext());
   gui = new GUI(this);
 
 }
@@ -32,6 +34,7 @@ void draw()
 {
   
   gui.display();
+
   
  // println(frameRate);
 }

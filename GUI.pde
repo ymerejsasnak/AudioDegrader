@@ -12,7 +12,6 @@ class GUI
   ControlP5 cp5;
   PApplet parent;
   Button loadButton, playButton, stopButton;
-  float[][] sampleData;
   PGraphics samplePlot;
   
     
@@ -46,23 +45,28 @@ class GUI
   
   void plotSample()
   {
-    sampleData = sampler.getSampleData(); 
-    int sampleLength = sampleData[0].length;
+    long numFrames = sampler.getNumFrames();
+    int framesPerPixel = int(numFrames / SAMPLE_WINDOW_WIDTH);
     
     samplePlot.beginDraw();
     samplePlot.background(10);
     samplePlot.stroke(50, 0, 0);
     samplePlot.line(0, SAMPLE_WINDOW_HEIGHT / 2, SAMPLE_WINDOW_WIDTH, SAMPLE_WINDOW_HEIGHT / 2);
     samplePlot.stroke(200);
-    for (float index = 0; index < SAMPLE_WINDOW_WIDTH - 1; index++)
+    samplePlot.strokeWeight(2);
+    
+    for (int index = 0; index < SAMPLE_WINDOW_WIDTH; index++)
     {
-      float x1 = index;
-      float y1 = map(sampleData[0][int(index / SAMPLE_WINDOW_WIDTH * sampleLength)], -1, 1, SAMPLE_WINDOW_HEIGHT, 0);
-      float x2 = index + 1;
-      float y2 = map(sampleData[0][int((index + 1) / SAMPLE_WINDOW_WIDTH * sampleLength)], -1, 1, SAMPLE_WINDOW_HEIGHT, 0);
+      int x = index;
       
-      samplePlot.line(x1, y1, x2, y2); 
+      float[] minMaxFrame = sampler.getMinMaxInFrames(index * framesPerPixel, framesPerPixel);
+            
+      float y1 = map(minMaxFrame[0], -1, 1, SAMPLE_WINDOW_HEIGHT, 0);
+      float y2 = map(minMaxFrame[1], -1, 1, SAMPLE_WINDOW_HEIGHT, 0);
+      
+      samplePlot.line(x, y1, x, y2); 
     }
+    
     samplePlot.endDraw();
   }
   
@@ -73,9 +77,9 @@ class GUI
     {
       image(samplePlot, PADDING, PADDING);   
       // playback position
-      float playPos = (float) sampler.getPosition();
-      println(sampler.getPosition());
-      playPos = map(playPos, 0, (float)sampler.getLength() - 1, PADDING, PADDING + SAMPLE_WINDOW_WIDTH - 1);
+      int playPos = (int) map((float)sampler.getPosition(), 
+                               0,       (float)sampler.getLength() - 1, 
+                               PADDING, PADDING + SAMPLE_WINDOW_WIDTH - 1);
       stroke(100);
       line(playPos, PADDING, playPos, PADDING + SAMPLE_WINDOW_HEIGHT - 1);
     }

@@ -3,8 +3,8 @@ public class Sampler
   AudioContext ac;
   SamplePlayer sampler;
   Sample loadedSample;
-  float[][] frameData;
   
+    
   Sampler()
   {
     ac = new AudioContext();
@@ -33,9 +33,7 @@ public class Sampler
   void setupSampler(String fileName)
   {
     loadedSample = SampleManager.sample(fileName);
-    frameData = new float[2][(int)loadedSample.getNumFrames()];
-    loadedSample.getFrames(0, frameData);
-    
+        
     if (sampler == null)
     {
       sampler = new SamplePlayer(ac, loadedSample); 
@@ -83,16 +81,23 @@ public class Sampler
   }
   
   
-  float[][] getSampleData()
+  float[] getMinMaxInFrames(int position, int numFrames)
   {
-    // ??temporarily will assume 1 channel (mono) audio
-    return frameData;
+    float[][] frameData = new float[2][numFrames];
+    loadedSample.getFrames(position, frameData);
+    return new float[]{min(frameData[0]), max(frameData[0])};
   }
   
   
   double getPosition()
   {
     return sampler.getPosition() > getLength() ? getLength() : sampler.getPosition(); 
+  }
+  
+  
+  long getNumFrames()
+  {
+    return loadedSample.getNumFrames(); 
   }
   
   

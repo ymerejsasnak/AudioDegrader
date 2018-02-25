@@ -9,6 +9,8 @@ class GUI
   final int SAMPLE_WINDOW_WIDTH = width - PADDING * 2;
   final int SAMPLE_WINDOW_HEIGHT = 150;
   
+  final int SAMPLE_CENTER_Y = SAMPLE_WINDOW_HEIGHT / 2;
+  
   ControlP5 cp5;
   PApplet parent;
   Button loadButton, playButton, stopButton;
@@ -47,13 +49,12 @@ class GUI
   {
     long numFrames = sampler.getNumFrames();
     int framesPerPixel = int(numFrames / SAMPLE_WINDOW_WIDTH);
-    
+    println(numFrames, framesPerPixel);
     samplePlot.beginDraw();
     samplePlot.background(10);
     samplePlot.stroke(50, 0, 0);
-    samplePlot.line(0, SAMPLE_WINDOW_HEIGHT / 2, SAMPLE_WINDOW_WIDTH, SAMPLE_WINDOW_HEIGHT / 2);
+    samplePlot.line(0, SAMPLE_CENTER_Y, SAMPLE_WINDOW_WIDTH, SAMPLE_CENTER_Y);
     samplePlot.stroke(200);
-    samplePlot.strokeWeight(2);
     
     for (int index = 0; index < SAMPLE_WINDOW_WIDTH; index++)
     {
@@ -64,6 +65,12 @@ class GUI
       float y1 = map(minMaxFrame[0], -1, 1, SAMPLE_WINDOW_HEIGHT, 0);
       float y2 = map(minMaxFrame[1], -1, 1, SAMPLE_WINDOW_HEIGHT, 0);
       
+      // quick fix to make very short sounds look better
+      if (numFrames < SAMPLE_WINDOW_WIDTH * 2)
+      {
+        y1 = map(y1, SAMPLE_WINDOW_HEIGHT, 0, 0, SAMPLE_WINDOW_HEIGHT); 
+      }
+     
       samplePlot.line(x, y1, x, y2); 
     }
     

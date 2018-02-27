@@ -42,10 +42,10 @@ void draw()
 
 void mousePressed()
 {
+  
   if (mouseX > gui.PADDING && mouseX < gui.PADDING + gui.SAMPLE_WINDOW_WIDTH &&
       mouseY > gui.PADDING && mouseY < gui.PADDING + gui.SAMPLE_WINDOW_HEIGHT)
       {
         sampler.mousePlay(mouseX - gui.PADDING); 
       }
-  
 }

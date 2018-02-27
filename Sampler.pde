@@ -4,6 +4,7 @@ public class Sampler
   SamplePlayer sampler;
   Sample loadedSample;
   
+  boolean isProcessing;
     
   Sampler()
   {
@@ -66,9 +67,10 @@ public class Sampler
   void loadNew(Sample sample)
   {
     loadedSample = sample;
-    sampler.setSample(loadedSample);
+    sampler = new SamplePlayer(ac, loadedSample);
     sampler.pause(true);
-    //ac.out.addInput(sampler);
+    sampler.setKillOnEnd(false);
+    ac.out.addInput(sampler);
     gui.plotSample();
   }
   
@@ -77,6 +79,9 @@ public class Sampler
   {
     if (sampler == null)  return;
     
+    if (!ac.isRunning())  ac.start();
+    
+    println("playing");
     sampler.reTrigger(); 
   }
   
@@ -84,6 +89,8 @@ public class Sampler
   void mousePlay(int _mouseX)
   {
     if (sampler == null)  return;
+    
+    if (!ac.isRunning())  ac.start();
     
     float startPos = map(_mouseX, 0, gui.SAMPLE_WINDOW_WIDTH, 0, (float)loadedSample.getLength());
     sampler.start(startPos); 

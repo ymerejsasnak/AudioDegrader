@@ -56,7 +56,6 @@ class GUI
   {
     long numFrames = sampler.getNumFrames();
     int framesPerPixel = int(numFrames / SAMPLE_WINDOW_WIDTH);
-    println(numFrames, framesPerPixel);
     samplePlot.beginDraw();
     samplePlot.background(10);
     samplePlot.stroke(50, 0, 0);

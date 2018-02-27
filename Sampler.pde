@@ -27,6 +27,8 @@ public class Sampler
   
   void load()
   {
+    if (degrader.isRunning())  return;
+    
     selectInput("load a file", "loader", dataFile("data"), this);
   }
   
@@ -77,7 +79,7 @@ public class Sampler
   
   void play() 
   {
-    if (sampler == null)  return;
+    if (sampler == null || degrader.isRunning())  return;
     
     if (!ac.isRunning())  ac.start();
     
@@ -88,7 +90,7 @@ public class Sampler
   
   void mousePlay(int _mouseX)
   {
-    if (sampler == null)  return;
+    if (sampler == null || degrader.isRunning())  return;
     
     if (!ac.isRunning())  ac.start();
     
@@ -98,7 +100,7 @@ public class Sampler
   
   void stopIt()
   {
-    if (sampler == null)  return;
+    if (sampler == null || degrader.isRunning())  return;
     
     sampler.pause(true);
     sampler.reset();

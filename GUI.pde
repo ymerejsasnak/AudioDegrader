@@ -16,7 +16,7 @@ class GUI
   Button loadButton, playButton, stopButton;
   PGraphics samplePlot;
   
-  Button tempButton;
+  Button crushButton, unevenGainButton, unevenLPRezButton;
   
     
   GUI(PApplet parent)
@@ -45,9 +45,18 @@ class GUI
                     .plugTo(sampler);
                     
                     
-    tempButton = cp5.addButton("temp")
+                    
+    crushButton = cp5.addButton("crush")
                     .setPosition(100, 400)
                     .plugTo(degrader);
+                    
+    unevenGainButton = cp5.addButton("unevenGain")
+                          .setPosition(100, 500)
+                          .plugTo(degrader);
+                          
+    unevenLPRezButton = cp5.addButton("unevenLPRez")
+                           .setPosition(100, 550)
+                           .plugTo(degrader);
 
   }
   

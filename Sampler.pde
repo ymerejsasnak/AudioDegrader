@@ -70,6 +70,7 @@ public class Sampler
   {
     loadedSample = sample;
     sampler.setSample(loadedSample);
+    sampler.reset();
     gui.plotSample();
   }
   
@@ -80,6 +81,8 @@ public class Sampler
     
     if (!ac.isRunning())  ac.start();
 
+     sampler.pause(true);
+     sampler.reset();
     sampler.reTrigger(); 
   }
   

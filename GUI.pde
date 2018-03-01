@@ -7,6 +7,8 @@ class GUI
   final int BUTTON_WIDTH = 50;
   final int BUTTON_HEIGHT = 25;
   
+  final int KNOB_SIZE = 20;
+  
   final int SAMPLE_WINDOW_WIDTH = width - PADDING * 2;
   final int SAMPLE_WINDOW_HEIGHT = 150;
   
@@ -20,6 +22,7 @@ class GUI
   PGraphics samplePlot;
   
   Button crushButton, unevenGainButton, unevenLPRezButton;
+  Knob crushKnob;
   
     
   GUI(PApplet parent)
@@ -52,6 +55,12 @@ class GUI
     crushButton = cp5.addButton("crush")
                     .setPosition(PADDING, DEGRADE_BUTTONS_Y)
                     .plugTo(degrader);
+                    
+    crushKnob = cp5.addKnob("crushValue")
+                   .setPosition(PADDING * 2 + BUTTON_WIDTH + KNOB_SIZE, DEGRADE_BUTTONS_Y)
+                   .setRange(4, 8)
+                   .setSize(KNOB_SIZE, KNOB_SIZE)
+                   .plugTo(degrader);
                     
     unevenGainButton = cp5.addButton("unevenGain")
                           .setPosition(PADDING, DEGRADE_BUTTONS_Y + PADDING + BUTTON_HEIGHT)

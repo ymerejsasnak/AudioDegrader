@@ -2,6 +2,7 @@ class GUI
 {
   
   final int PADDING = 10;
+  final int SPACER = PADDING * 5;
   
   final int BUTTON_WIDTH = 50;
   final int BUTTON_HEIGHT = 25;
@@ -10,6 +11,8 @@ class GUI
   final int SAMPLE_WINDOW_HEIGHT = 150;
   
   final int SAMPLE_CENTER_Y = SAMPLE_WINDOW_HEIGHT / 2;
+  
+  final int DEGRADE_BUTTONS_Y = SAMPLE_WINDOW_HEIGHT + BUTTON_HEIGHT + SPACER;
   
   ControlP5 cp5;
   PApplet parent;
@@ -47,15 +50,15 @@ class GUI
                     
                     
     crushButton = cp5.addButton("crush")
-                    .setPosition(100, 400)
+                    .setPosition(PADDING, DEGRADE_BUTTONS_Y)
                     .plugTo(degrader);
                     
     unevenGainButton = cp5.addButton("unevenGain")
-                          .setPosition(100, 500)
+                          .setPosition(PADDING, DEGRADE_BUTTONS_Y + PADDING + BUTTON_HEIGHT)
                           .plugTo(degrader);
                           
     unevenLPRezButton = cp5.addButton("unevenLPRez")
-                           .setPosition(100, 550)
+                           .setPosition(PADDING, DEGRADE_BUTTONS_Y + PADDING * 2 + BUTTON_HEIGHT * 2)
                            .plugTo(degrader);
 
   }
@@ -64,6 +67,7 @@ class GUI
   void plotSample()
   {
     long numFrames = sampler.getNumFrames();
+        
     int framesPerPixel = int(numFrames / SAMPLE_WINDOW_WIDTH);
     samplePlot.beginDraw();
     samplePlot.background(10);
@@ -104,6 +108,10 @@ class GUI
                                PADDING, PADDING + SAMPLE_WINDOW_WIDTH - 1);
       stroke(100);
       line(playPos, PADDING, playPos, PADDING + SAMPLE_WINDOW_HEIGHT - 1);
+      
+      fill(200);
+      text("frames in sample:" + sampler.getNumFrames(), 500, 60);
+      text("current position:" + sampler.getPosition(), 500, 50);
     }
     else
     {

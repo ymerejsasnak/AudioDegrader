@@ -19,9 +19,9 @@ public class Sampler
   }
   
   
-  SamplePlayer getSampler()
+  Sample getSample()
   {
-    return sampler;  
+    return sampler.getSample();  
   }
   
   
@@ -66,13 +66,10 @@ public class Sampler
   }
   
   
-  void loadNew(Sample sample)
+  void loadDegraded(Sample sample)
   {
     loadedSample = sample;
-    sampler = new SamplePlayer(ac, loadedSample);
-    sampler.pause(true);
-    sampler.setKillOnEnd(false);
-    ac.out.addInput(sampler);
+    sampler.setSample(loadedSample);
     gui.plotSample();
   }
   
@@ -82,8 +79,7 @@ public class Sampler
     if (sampler == null || degrader.isRunning())  return;
     
     if (!ac.isRunning())  ac.start();
-    
-    println("playing");
+
     sampler.reTrigger(); 
   }
   
@@ -97,6 +93,7 @@ public class Sampler
     float startPos = map(_mouseX, 0, gui.SAMPLE_WINDOW_WIDTH, 0, (float)loadedSample.getLength());
     sampler.start(startPos); 
   }
+  
   
   void stopIt()
   {

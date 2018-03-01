@@ -2,9 +2,12 @@ class Degrader
 {
   AudioContext ac;
   
-  SamplePlayer inputSampler;
+  Sample inputSample;
   Sample outputSample;
+  float sampleLength;
+  SamplePlayer degradeSampler;
   RecordToSample recorder;
+  
   
   boolean isRunning;
     
@@ -22,63 +25,73 @@ class Degrader
   
   
   void setupProcess()  
-  {
-    if (isRunning)  return;
-    isRunning = true;
+  {   
+    ac.stop();
     
-    sampler.stopIt();
-    inputSampler = sampler.getSampler();
-    inputSampler.setKillOnEnd(true);
+    inputSample = sampler.getSample();
+    sampleLength = (float) inputSample.getLength();
     
-    outputSample = new Sample(sampler.getLength());
+    degradeSampler = new SamplePlayer(ac, inputSample);
+    degradeSampler.pause(true);
+    degradeSampler.setKillOnEnd(true);
+    
+    
+    outputSample = new Sample(sampleLength);
     recorder = new RecordToSample(ac, outputSample, RecordToSample.Mode.FINITE);
-    
+    ac.out.addDependent(recorder);
+        
     recorder.setKillListener(new Bead() {
       public void messageReceived(Bead message)
       {
-        sampler.loadNew(outputSample);
+        sampler.loadDegraded(outputSample);
         isRunning = false;
         ac.stop();
       }      
     });
-    
-    ac.out.addDependent(recorder);
+   
   }
   
   
   void runProcess() 
   {       
-    ac.stop();
-    inputSampler.reTrigger();
+    
+    degradeSampler.reTrigger();
     ac.runNonRealTime();
   }
   
   
   void crush()
   {
+    if (isRunning)  return;
+    isRunning = true;
+    
     setupProcess();
     
     NBitsConverter crush = new NBitsConverter(ac, 6);
-    crush.addInput(inputSampler);
+    crush.addInput(degradeSampler);
     recorder.addInput(crush);
     
     runProcess();
+  
   }
   
   
   void unevenGain()
   {
+    if (isRunning)  return;
+    isRunning = true;
+    
     setupProcess();
     
-    Envelope gainEnv = new Envelope(ac, 1);
+    Envelope gainEnv = new Envelope(ac, random(.75, 1.5));
     Gain gain = new Gain(ac, 1, gainEnv);
     
-    for (int i = 0; i < outputSample.getLength(); i += 10)
+    for (int i = 0; i < 10; i++)
     {
-       gainEnv.addSegment(random(1.5), 10);
+       gainEnv.addSegment(random(.75, 1.5), i * sampleLength / 10.0);
     }
     
-    gain.addInput(inputSampler);
+    gain.addInput(degradeSampler);
     recorder.addInput(gain);
     
     runProcess();
@@ -87,19 +100,22 @@ class Degrader
   
   void unevenLPRez()
   {
+    if (isRunning)  return;
+    isRunning = true;
+    
     setupProcess();
     
-    Envelope freqEnv = new Envelope(ac, 44100);
-    Envelope rezEnv = new Envelope(ac, 0);
+    Envelope freqEnv = new Envelope(ac, random(100, 10000));
+    Envelope rezEnv = new Envelope(ac, random(.1, .6));
     LPRezFilter filter = new LPRezFilter(ac, freqEnv, rezEnv);
     
-    for (int i = 0; i < outputSample.getLength(); i += 100)
+    for (int i = 0; i < 10; i++)
     {
-       freqEnv.addSegment(random(11025), 100);
-       rezEnv.addSegment(random(.9), 100);
+       freqEnv.addSegment(random(100, 10000), i * sampleLength / 10.0);
+       rezEnv.addSegment(random(.1, .6), i * sampleLength / 10.0);
     }
     
-    filter.addInput(inputSampler);
+    filter.addInput(degradeSampler);
     recorder.addInput(filter);
     
     runProcess();

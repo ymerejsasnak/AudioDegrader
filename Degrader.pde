@@ -4,13 +4,14 @@ class Degrader
   
   Sample inputSample;
   Sample outputSample;
-  double sampleLength;
-  SamplePlayer degradeSampler;
-  RecordToSample recorder;
+  long numFrames;
+  float[][] frameData;
   
   boolean isRunning;
-  
-  
+    
+    
+    
+    
   int crushValue;
   
     
@@ -28,59 +29,48 @@ class Degrader
   }
   
   
-  void setupProcess()  
+  boolean setupProcess()  
   {   
-    ac.stop();
-        
-    sampler.sampler.pause(true);    
+    if (isRunning) return false;
+    isRunning = true;
+    
+    sampler.sampler.pause(true);
         
     inputSample = sampler.getSample();
-    sampleLength = inputSample.getLength();
+    numFrames = inputSample.getNumFrames();
+    frameData = new float[2][(int)numFrames];
+    inputSample.getFrames(0, frameData);
     
-    degradeSampler = new SamplePlayer(ac, inputSample);   
-    degradeSampler.setKillOnEnd(true);
-    
-    outputSample = new Sample(sampleLength);
-    recorder = new RecordToSample(ac, outputSample, RecordToSample.Mode.FINITE);
-    ac.out.addDependent(recorder);
-        
-    recorder.setKillListener(new Bead() {
-      public void messageReceived(Bead message)
-      {
-        ac.stop();
-        sampler.loadDegraded(outputSample);
-        isRunning = false;
-      }      
-    });
-   
+    outputSample = new Sample(inputSample.getLength());   
+
+    println(inputSample.getNumChannels());
+    return true;
   }
   
   
-  void runProcess() 
-  {       
-    
-    degradeSampler.reTrigger();
-    ac.runNonRealTime();
-    
-  }
-  
+ 
   
   void crush()
   {
-    if (isRunning)  return;
-    isRunning = true;
-    
-    setupProcess();
-    
-    NBitsConverter crush = new NBitsConverter(ac, crushValue);
-    crush.addInput(degradeSampler);
-    recorder.addInput(crush);
-    
-    runProcess();
-  println(crushValue);
+    if (setupProcess())
+    {
+      for (int frame = 0; frame < numFrames; frame++)
+      {
+        float inFrame = frameData[0][frame];
+        float outFrame = round(inFrame * crushValue) / (float)crushValue;
+        outputSample.putFrame(frame, new float[]{outFrame, outFrame});
+      }
+      sampler.loadDegraded(outputSample);
+      isRunning = false;
+    }
+    else 
+    {
+      return; 
+    }
+   
   }
   
-  
+  /*
   void unevenGain()
   {
     if (isRunning)  return;
@@ -126,5 +116,5 @@ class Degrader
 
     runProcess();
   }
-
+*/
 }

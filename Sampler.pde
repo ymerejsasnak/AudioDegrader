@@ -70,7 +70,6 @@ public class Sampler
   {
     loadedSample = sample;
     sampler.setSample(loadedSample);
-    sampler.reset();
     gui.plotSample();
   }
   
@@ -81,8 +80,6 @@ public class Sampler
     
     if (!ac.isRunning())  ac.start();
 
-     sampler.pause(true);
-     sampler.reset();
     sampler.reTrigger(); 
   }
   
@@ -113,10 +110,10 @@ public class Sampler
   }
   
   
-  float[] getMinMaxInFrames(int position, int numFrames)
+  float[] getMinMaxInFrames(float position, float numFrames)
   {
-    float[][] frameData = new float[2][numFrames];
-    loadedSample.getFrames(position, frameData);
+    float[][] frameData = new float[2][(int)numFrames];
+    loadedSample.getFrames((int)position, frameData);
     return new float[]{min(frameData[0]), max(frameData[0])};
   }
   

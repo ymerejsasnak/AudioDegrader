@@ -2,14 +2,10 @@
 AUDIO DEGRADER
 
 
-- currently ignoring stereo waveforms, just drawing channel 0 whether mono or not
+- currently ignoring stereo waveforms, and diff samplerates -- fix this!
 
-issues: first playback after first processing doesn't usually playback from start of sample (why?!?!?!)
-        sometimes certain processes  seem to shift the sample as if something is recording at wrong time (???)
-        
 minor improvements to wav drawing would be nice
 
-NEED TO ADD NORMALIZATION AFTER PROCESs! (OR AS BUTTON)
 */
 
 import controlP5.*;

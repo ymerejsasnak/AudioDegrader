@@ -58,7 +58,8 @@ class GUI
                     
     crushKnob = cp5.addKnob("crushValue")
                    .setPosition(PADDING * 2 + BUTTON_WIDTH + KNOB_SIZE, DEGRADE_BUTTONS_Y)
-                   .setRange(4, 8)
+                   .setRange(2, 20)
+                   .setValue(10)
                    .setSize(KNOB_SIZE, KNOB_SIZE)
                    .plugTo(degrader);
                     
@@ -77,7 +78,7 @@ class GUI
   {
     long numFrames = sampler.getNumFrames();
         
-    int framesPerPixel = int(numFrames / SAMPLE_WINDOW_WIDTH);
+    float framesPerPixel = numFrames / (float)SAMPLE_WINDOW_WIDTH;
     samplePlot.beginDraw();
     samplePlot.background(10);
     samplePlot.stroke(50, 0, 0);

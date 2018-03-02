@@ -10,15 +10,19 @@ class Degrader
   boolean isRunning;
     
     
-    
-    
   int crushValue;
+  float gainChange, gainRange, averagerPasses;
   
     
   Degrader(AudioContext ac) 
   {
     this.ac = ac;
     isRunning = false;
+    
+    crushValue = 10;
+    gainChange = .02;
+    gainRange = .5;
+    averagerPasses = 2;
 
   }
   
@@ -29,7 +33,7 @@ class Degrader
   }
   
   
-  boolean setupProcess()  
+  private boolean setupProcess()  
   {   
     if (isRunning) return false;
     isRunning = true;
@@ -43,12 +47,34 @@ class Degrader
     
     outputSample = new Sample(inputSample.getLength());   
 
-    println(inputSample.getNumChannels());
     return true;
   }
   
   
- 
+  private void endProcess()
+  {
+    normalize();
+    sampler.loadDegraded(outputSample);
+    isRunning = false;
+  }
+  
+  
+  private void normalize()
+  {
+    outputSample.getFrames(0, frameData);
+    float maxAmp = max(max(frameData[0]), abs(min(frameData[0])));
+    
+    for (int frame = 0; frame < numFrames; frame++)
+      {
+        float inFrame = frameData[0][frame];
+        float outFrame = map(inFrame, -maxAmp, maxAmp, -1, 1);
+        outputSample.putFrame(frame, new float[]{outFrame, outFrame});
+      }
+  }
+  
+  
+  
+  
   
   void crush()
   {
@@ -60,8 +86,7 @@ class Degrader
         float outFrame = round(inFrame * crushValue) / (float)crushValue;
         outputSample.putFrame(frame, new float[]{outFrame, outFrame});
       }
-      sampler.loadDegraded(outputSample);
-      isRunning = false;
+      endProcess();
     }
     else 
     {
@@ -70,51 +95,51 @@ class Degrader
    
   }
   
-  /*
+  
   void unevenGain()
   {
-    if (isRunning)  return;
-    isRunning = true;
-    
-    setupProcess();
-    
-    Envelope gainEnv = new Envelope(ac, random(.5, 1));
-    Gain gain = new Gain(ac, 1, gainEnv);
-    
-    int changeFreq = (int) random(1000, 100000);
-    for (int i = 0; i < changeFreq; i++)
+    if (setupProcess())
     {
-       gainEnv.addSegment(random(.5, 1), i * (float)(sampleLength / (float)changeFreq));
+      int offset = millis();
+      for (int frame = 0; frame < numFrames; frame++)
+      {
+        float inFrame = frameData[0][frame];
+        float outFrame = inFrame * map(noise((frame + offset) * gainChange), 0, 1, 1 - gainRange, 1);
+        outputSample.putFrame(frame, new float[]{outFrame, outFrame});
+      }
+      endProcess();
     }
-    
-    gain.addInput(degradeSampler);
-    recorder.addInput(gain);
-    
-    runProcess();
+    else 
+    {
+      return; 
+    }
   }
   
   
-  void unevenLPRez()
+  void averager()
   {
-    if (isRunning)  return;
-    isRunning = true;
-    
-    setupProcess();
-    
-    Envelope freqEnv = new Envelope(ac, random(100, 10000));
-    Envelope rezEnv = new Envelope(ac, random(.3, .6));
-    LPRezFilter filter = new LPRezFilter(ac, freqEnv, rezEnv);
-    
-    for (int i = 0; i < 10000; i++)
+    if (setupProcess())
     {
-       freqEnv.addSegment(random(100, 20000), i * (float)(sampleLength / 10000.0));
-       rezEnv.addSegment(random(.3, .8), i * (float)(sampleLength / 10000.0));
+      for(int pass = 0; pass < averagerPasses; pass++)
+      {
+        outputSample.putFrame(0, new float[]{0, 0});
+        for (int frame = 1; frame < numFrames; frame++)
+        {
+          float inFrame1 = frameData[0][frame - 1];
+          float inFrame2 = frameData[0][frame];
+          float outFrame = (inFrame1 + inFrame2) / 2.0;
+          
+          outputSample.putFrame(frame, new float[]{outFrame, outFrame});
+        }
+        outputSample.putFrame((int)numFrames - 1, new float[]{0, 0});
+        outputSample.getFrames(0, frameData);
+      }
+      endProcess();
     }
-    
-    filter.addInput(degradeSampler);
-    recorder.addInput(filter);
-
-    runProcess();
+    else 
+    {
+      return; 
+    }
   }
-*/
+
 }

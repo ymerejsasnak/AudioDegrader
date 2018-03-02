@@ -6,6 +6,10 @@ AUDIO DEGRADER
 
 minor improvements to wav drawing would be nice
 
+--figure out how to run degradation in separate thread so can do graphical update of progress (ie progress bar)
+
+--add 2nd control to crush that controls the range of where the crush applies (ie only part of wav, > .5 or something)
+
 */
 
 import controlP5.*;

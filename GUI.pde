@@ -14,15 +14,15 @@ class GUI
   
   final int SAMPLE_CENTER_Y = SAMPLE_WINDOW_HEIGHT / 2;
   
-  final int DEGRADE_BUTTONS_Y = SAMPLE_WINDOW_HEIGHT + BUTTON_HEIGHT + SPACER;
+  final int DEGRADE_BUTTONS_Y = SAMPLE_WINDOW_HEIGHT + BUTTON_HEIGHT + SPACER * 2;
   
   ControlP5 cp5;
   PApplet parent;
   Button loadButton, playButton, stopButton;
   PGraphics samplePlot;
   
-  Button crushButton, unevenGainButton, unevenLPRezButton;
-  Knob crushKnob;
+  Button crushButton, unevenGainButton, averagerButton;
+  Knob crushKnob, gainChangeKnob, gainRangeKnob, avgPassesKnob;
   
     
   GUI(PApplet parent)
@@ -57,19 +57,43 @@ class GUI
                     .plugTo(degrader);
                     
     crushKnob = cp5.addKnob("crushValue")
-                   .setPosition(PADDING * 2 + BUTTON_WIDTH + KNOB_SIZE, DEGRADE_BUTTONS_Y)
+                   .setPosition(PADDING * 2 + BUTTON_WIDTH + SPACER, DEGRADE_BUTTONS_Y)
                    .setRange(2, 20)
                    .setValue(10)
                    .setSize(KNOB_SIZE, KNOB_SIZE)
                    .plugTo(degrader);
+      
                     
     unevenGainButton = cp5.addButton("unevenGain")
-                          .setPosition(PADDING, DEGRADE_BUTTONS_Y + PADDING + BUTTON_HEIGHT)
+                          .setPosition(PADDING, DEGRADE_BUTTONS_Y + SPACER + BUTTON_HEIGHT)
                           .plugTo(degrader);
                           
-    unevenLPRezButton = cp5.addButton("unevenLPRez")
-                           .setPosition(PADDING, DEGRADE_BUTTONS_Y + PADDING * 2 + BUTTON_HEIGHT * 2)
+    gainChangeKnob = cp5.addKnob("gainChange")
+                  .setPosition(PADDING * 2 + BUTTON_WIDTH + SPACER, DEGRADE_BUTTONS_Y + SPACER + BUTTON_HEIGHT)
+                  .setRange(0.0002, 1)
+                  .setValue(0.02)
+                  .setSize(KNOB_SIZE, KNOB_SIZE)
+                  .plugTo(degrader);
+                  
+    gainRangeKnob = cp5.addKnob("gainRange")
+                  .setPosition(PADDING * 2 + BUTTON_WIDTH + SPACER * 2, DEGRADE_BUTTONS_Y + SPACER + BUTTON_HEIGHT)
+                  .setRange(0.1, 1)
+                  .setValue(0.5)
+                  .setSize(KNOB_SIZE, KNOB_SIZE)
+                  .plugTo(degrader);
+        
+                  
+    averagerButton = cp5.addButton("averager")
+                           .setPosition(PADDING, DEGRADE_BUTTONS_Y + SPACER * 2 + BUTTON_HEIGHT * 2)
                            .plugTo(degrader);
+                           
+    avgPassesKnob = cp5.addKnob("averagerPasses")
+                  .setPosition(PADDING * 2 + BUTTON_WIDTH + SPACER * 2, DEGRADE_BUTTONS_Y + SPACER * 2 + BUTTON_HEIGHT * 2)
+                  .setRange(1, 100)
+                  .setValue(2)
+                  .setSize(KNOB_SIZE, KNOB_SIZE)
+                  .plugTo(degrader);
+
 
   }
   
